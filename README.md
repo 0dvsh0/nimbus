@@ -32,3 +32,8 @@ The visual language comes from the supplied ink-cloud artwork (`images/clouds.pn
 - The "Add to Chrome" link points to the Chrome Web Store home page. Swap in the real listing URL.
 - Stats and testimonials are placeholder copy.
 - If WebGL isn't available, the page falls back to the static cloud image. `prefers-reduced-motion` is respected.
+
+## License
+
+[MIT](LICENSE) © 2026 Devansh
+
