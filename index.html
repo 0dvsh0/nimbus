@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nimbus — Say the right thing. Just press Tab.</title>
+  <meta name="description" content="Nimbus is a Chrome extension that drifts the perfect reply into any text box on X, LinkedIn, WhatsApp, Instagram and more. Autocomplete for replies — just press Tab." />
+  <meta name="theme-color" content="#0b0612" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23140b20'/%3E%3Cpath d='M14 40c-4 0-6-3-6-6s3-6 7-6c1-6 6-10 12-10 5 0 9 3 11 7 2-2 4-3 7-3 5 0 9 4 9 9 3 1 4 3 4 5 0 3-2 4-5 4z' fill='none' stroke='%23c8aed6' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- SVG defs: ink filters reused across the page -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="ink-rough">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n" />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" />
+      </filter>
+      <linearGradient id="g-lilac" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f1e6ee" />
+        <stop offset=".55" stop-color="#c8aed6" />
+        <stop offset="1" stop-color="#7d4fa6" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#top" class="brand" aria-label="Nimbus home">
+        <span class="brand__mark" data-cloud-logo></span>
+        <span class="brand__name">Nimbus</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#ritual">How it works</a>
+        <a href="#playground">Try it</a>
+        <a href="#details">Details</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a href="#cta" class="btn btn--sm btn--light">
+        <i class="fa-brands fa-chrome"></i><span>Add to Chrome</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="hero">
+      <canvas id="sky" class="hero__sky" aria-hidden="true"></canvas>
+      <div class="hero__fallback" aria-hidden="true"></div>
+      <div class="hero__veil" aria-hidden="true"></div>
+      <div class="stars" aria-hidden="true">
+        <i style="--x:86%;--y:72%;--s:5px;--d:0s"></i>
+        <i style="--x:91%;--y:76%;--s:3px;--d:.7s"></i>
+        <i style="--x:83%;--y:79%;--s:2px;--d:1.4s"></i>
+        <i style="--x:12%;--y:22%;--s:3px;--d:2s"></i>
+        <i style="--x:18%;--y:28%;--s:2px;--d:1s"></i>
+        <i style="--x:64%;--y:14%;--s:2px;--d:2.6s"></i>
+      </div>
+
+      <div class="hero__content">
+        <a href="#playground" class="pill reveal">
+          <span class="pill__dot"></span>
+          New — now drifting into WhatsApp Web &amp; Instagram DMs
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <h1 class="hero__title reveal" style="--delay:.08s">
+          Say the right thing.<br />
+          <em>Just press <span class="kbd-inline">Tab</span>.</em>
+        </h1>
+
+        <p class="hero__sub reveal" style="--delay:.16s">
+          Nimbus reads the conversation and quietly drifts the perfect reply into any text box —
+          X, LinkedIn, WhatsApp, Instagram and more. Autocomplete, but for what you meant to say.
+        </p>
+
+        <div class="hero__ctas reveal" style="--delay:.24s">
+          <a href="#cta" class="btn btn--light btn--lg magnetic">
+            <i class="fa-brands fa-chrome"></i>
+            <span>Add to Chrome</span>
+            <span class="btn__meta">free</span>
+          </a>
+          <a href="#playground" class="btn btn--ghost btn--lg">
+            <span>Try it right here</span>
+            <i class="fa-solid fa-arrow-down"></i>
+          </a>
+        </div>
+
+        <ul class="hero__proof reveal" style="--delay:.32s">
+          <li><span class="stars-rating">★★★★★</span> 4.9 on Chrome Web Store</li>
+          <li><span class="sep"></span>120,000+ writers</li>
+          <li><span class="sep"></span>No sign-up to start</li>
+        </ul>
+      </div>
+
+      <!-- Hero product demo -->
+      <div class="demo reveal" style="--delay:.4s" aria-label="Animated demo of Nimbus suggesting replies">
+        <div class="demo__chrome">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <div class="demo__url"><i class="fa-solid fa-lock"></i><span id="demoUrl">x.com/home</span></div>
+          <div class="demo__ext" title="Nimbus is active"><span data-cloud-logo></span></div>
+        </div>
+        <div class="demo__tabs" role="tablist">
+          <button class="demo__tab is-active" data-i="0"><i class="fa-brands fa-x-twitter"></i><span>X</span></button>
+          <button class="demo__tab" data-i="1"><i class="fa-brands fa-linkedin-in"></i><span>LinkedIn</span></button>
+          <button class="demo__tab" data-i="2"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></button>
+          <button class="demo__tab" data-i="3"><i class="fa-brands fa-instagram"></i><span>Instagram</span></button>
+          <button class="demo__tab" data-i="4"><i class="fa-regular fa-envelope"></i><span>Gmail</span></button>
+        </div>
+        <div class="demo__body">
+          <div class="msg">
+            <div class="msg__avatar" id="demoAvatar">AK</div>
+            <div class="msg__main">
+              <div class="msg__head"><strong id="demoName">Ava Kim</strong><span id="demoHandle">@avakim · 2m</span></div>
+              <p class="msg__text" id="demoMsg">Just shipped my first indie app after 14 months of nights &amp; weekends. Terrified and thrilled.</p>
+            </div>
+          </div>
+          <div class="compose">
+            <div class="compose__field" id="demoField">
+              <span class="compose__typed" id="demoTyped"></span><span class="caret"></span><span class="compose__ghost" id="demoGhost"></span>
+              <span class="compose__hint" id="demoHint"><span class="keycap keycap--xs">Tab</span> to accept</span>
+            </div>
+            <div class="compose__bar">
+              <div class="tone-chips" id="demoTones">
+                <span class="chip is-on">Warm</span><span class="chip">Witty</span><span class="chip">Brief</span>
+              </div>
+              <div class="condense" id="demoCondense"><span></span><span></span><span></span> condensing</div>
+              <button class="compose__send" id="demoSend" tabindex="-1">Reply</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo__key" id="demoKey" aria-hidden="true"><span class="keycap keycap--xl">Tab <i class="fa-solid fa-arrow-right-long"></i></span></div>
+      </div>
+
+      <a href="#platforms" class="scroll-cue" aria-label="Scroll down"><span></span></a>
+    </section>
+
+    <!-- ============ PLATFORMS ============ -->
+    <section class="platforms" id="platforms" aria-label="Supported platforms">
+      <p class="eyebrow center">Drifts into every box you write in</p>
+      <div class="marquee">
+        <div class="marquee__track">
+          <span><i class="fa-brands fa-x-twitter"></i>X</span>
+          <span><i class="fa-brands fa-linkedin"></i>LinkedIn</span>
+          <span><i class="fa-brands fa-whatsapp"></i>WhatsApp</span>
+          <span><i class="fa-brands fa-instagram"></i>Instagram</span>
+          <span><i class="fa-regular fa-envelope"></i>Gmail</span>
+          <span><i class="fa-brands fa-slack"></i>Slack</span>
+          <span><i class="fa-brands fa-discord"></i>Discord</span>
+          <span><i class="fa-brands fa-reddit-alien"></i>Reddit</span>
+          <span><i class="fa-brands fa-facebook-messenger"></i>Messenger</span>
+          <span><i class="fa-brands fa-telegram"></i>Telegram</span>
+          <span><i class="fa-brands fa-youtube"></i>YouTube</span>
+          <span><i class="fa-brands fa-github"></i>GitHub</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RITUAL / HOW ============ -->
+    <section class="section ritual" id="ritual">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">The ritual</p>
+          <h2 class="h2">Three moments.<br /><em>One keystroke.</em></h2>
+          <p class="lead">No prompts. No pop-ups. No copy-paste from a chatbot tab. Nimbus lives where your words already go.</p>
+        </header>
+
+        <ol class="steps">
+          <li class="step reveal">
+            <div class="step__art" data-cloud-art="1"></div>
+            <span class="step__num">01</span>
+            <h3>Click</h3>
+            <p>Focus any reply box. That's the whole setup. Nimbus wakes quietly — no buttons to find.</p>
+          </li>
+          <li class="step reveal" style="--delay:.1s">
+            <div class="step__art" data-cloud-art="2"></div>
+            <span class="step__num">02</span>
+            <h3>Condense</h3>
+            <p>It reads the thread, the person, the moment. A reply forms in soft ghost ink, right where your cursor waits.</p>
+          </li>
+          <li class="step reveal" style="--delay:.2s">
+            <div class="step__art" data-cloud-art="3"></div>
+            <span class="step__num">03</span>
+            <h3>Tab</h3>
+            <p>One key and it's yours. Keep typing to steer it, or just send. You stay the author — always.</p>
+          </li>
+        </ol>
+        <svg class="ritual__thread" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 60 C 150 10, 250 110, 400 60 S 650 10, 800 60 S 1050 110, 1200 60" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ PLAYGROUND ============ -->
+    <section class="section playground" id="playground">
+      <div class="container">
+        <header class="section__head center reveal">
+          <p class="eyebrow">Playground</p>
+          <h2 class="h2">Don't take our word.<br /><em>Take its.</em></h2>
+          <p class="lead">Click the reply box. Watch a suggestion condense. Press <span class="keycap keycap--sm">Tab</span>. Type to steer, cycle tones, accept word by word.</p>
+        </header>
+
+        <div class="pg reveal">
+          <div class="pg__side">
+            <p class="pg__label">Scenario</p>
+            <div class="pg__scenarios" id="pgScenarios" role="tablist"></div>
+            <div class="pg__keys">
+              <p class="pg__label">Keys</p>
+              <ul>
+                <li><span class="keycap keycap--sm">Tab</span> accept all</li>
+                <li><span class="keycap keycap--sm">→</span> accept next word</li>
+                <li><span class="keycap keycap--sm">Alt</span><span class="keycap keycap--sm">]</span> next tone</li>
+                <li><span class="keycap keycap--sm">Esc</span> dismiss</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="pg__stage">
+            <div class="pg__app" id="pgApp">
+              <div class="pg__apphead">
+                <i id="pgIcon" class="fa-brands fa-linkedin-in"></i>
+                <span id="pgPlatform">LinkedIn · Messaging</span>
+                <span class="pg__live"><span></span>Nimbus active</span>
+              </div>
+              <div class="pg__thread" id="pgThread"></div>
+              <div class="pg__composer">
+                <div class="ghostfield" id="pgField">
+                  <div class="ghostfield__mirror" aria-hidden="true"><span class="ghostfield__typed" id="pgMirrorTyped"></span><span class="ghostfield__ghost" id="pgGhost"></span></div>
+                  <textarea id="pgInput" rows="3" placeholder="Click here to write a reply…" aria-label="Reply box with AI suggestions" spellcheck="false"></textarea>
+                  <div class="ghostfield__condense" id="pgCondense"><span></span><span></span><span></span></div>
+                </div>
+                <div class="pg__bar">
+                  <div class="tone-chips" id="pgTones" role="radiogroup" aria-label="Tone"></div>
+                  <div class="pg__actions">
+                    <button class="btn btn--xs btn--ghost pg__tabbtn" id="pgTabBtn" type="button">Accept <span class="keycap keycap--xs">Tab</span></button>
+                    <button class="btn btn--xs btn--light" id="pgSend" type="button">Send <i class="fa-solid fa-paper-plane"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="pg__note" id="pgNote">Suggestions here are pre-written for the demo. The extension writes them live, for every conversation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DETAILS / BENTO ============ -->
+    <section class="section details" id="details">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">The details</p>
+          <h2 class="h2">Small things.<br /><em>Enormous difference.</em></h2>
+        </header>
+
+        <div class="bento">
+          <article class="card card--voice reveal">
+            <div class="card__copy">
+              <h3>Sounds like you. Not like a robot.</h3>
+              <p>Nimbus learns your rhythm — your punctuation, your emoji habits, how you sign off. The suggestion reads like you on a good day.</p>
+            </div>
+            <div class="voice">
+              <div class="voice__dial" id="voiceDial">
+                <button data-tone="warm" class="is-on">Warm</button>
+                <button data-tone="witty">Witty</button>
+                <button data-tone="brief">Brief</button>
+                <button data-tone="formal">Formal</button>
+                <span class="voice__thumb"></span>
+              </div>
+              <p class="voice__out" id="voiceOut">Congrats, Maya! That's huge — you've earned every bit of it. Drinks on me this week? 🥂</p>
+            </div>
+          </article>
+
+          <article class="card card--room reveal" style="--delay:.06s">
+            <div class="card__copy">
+              <h3>Reads the whole room.</h3>
+              <p>Not just the last line. The whole thread, who's speaking, and what's still unanswered.</p>
+            </div>
+            <div class="room">
+              <div class="room__line"><span class="room__who">Sam</span><span class="room__bar" style="--w:78%"></span></div>
+              <div class="room__line"><span class="room__who you">You</span><span class="room__bar you" style="--w:52%"></span></div>
+              <div class="room__line"><span class="room__who">Sam</span><span class="room__bar q" style="--w:64%"></span><span class="room__q">?</span></div>
+              <div class="room__ghost">“Thursday works — 3pm at the usual spot?”</div>
+            </div>
+          </article>
+
+          <article class="card card--keys reveal" style="--delay:.12s">
+            <div class="card__copy">
+              <h3>Keyboard-native.</h3>
+              <p>Your hands never leave the keys.</p>
+            </div>
+            <div class="keys">
+              <span class="keycap keycap--lg keycap--hero">Tab</span>
+              <span class="keycap keycap--md">→</span>
+              <span class="keycap keycap--md">Alt ]</span>
+              <span class="keycap keycap--md">Esc</span>
+            </div>
+          </article>
+
+          <article class="card card--private reveal">
+            <div class="private__art" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" class="ring r1" />
+                <circle cx="60" cy="60" r="38" class="ring r2" />
+                <rect x="44" y="54" width="32" height="26" rx="6" class="lock" />
+                <path d="M50 54v-8a10 10 0 0 1 20 0v8" class="lock" />
+                <circle cx="60" cy="66" r="3" fill="#c8aed6" />
+              </svg>
+            </div>
+            <div class="card__copy">
+              <h3>Private as a passing thought.</h3>
+              <p>Conversations are processed in-flight and never stored. Never sold. Never used to train anything. Pause Nimbus on any site with one click.</p>
+            </div>
+          </article>
+
+          <article class="card card--lang reveal" style="--delay:.06s">
+            <div class="card__copy">
+              <h3>Every language you speak.</h3>
+              <p>Replies in the language of the conversation — 40+ and counting.</p>
+            </div>
+            <div class="lang" aria-hidden="true">
+              <div class="lang__col">
+                <span>Merci, c'est parfait !</span><span>¡Claro que sí! 🙌</span><span>ありがとう、助かります</span><span>बहुत बढ़िया, धन्यवाद!</span><span>Danke, klingt super!</span><span>Obrigado pela ajuda!</span><span>정말 고마워요!</span><span>Merci, c'est parfait !</span><span>¡Claro que sí! 🙌</span><span>ありがとう、助かります</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card card--fast reveal" style="--delay:.12s">
+            <div class="fast__num"><span data-count="180">0</span><small>ms</small></div>
+            <div class="card__copy">
+              <h3>Faster than a blink.</h3>
+              <p>Median time from click to suggestion. Featherweight, under 90&nbsp;KB, zero page jank.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MANIFESTO ============ -->
+    <section class="manifesto" id="manifesto">
+      <div class="manifesto__bg" aria-hidden="true"></div>
+      <div class="manifesto__veil" aria-hidden="true"></div>
+      <div class="container manifesto__inner">
+        <p class="eyebrow center reveal">Why we built it</p>
+        <blockquote class="manifesto__quote reveal" id="manifestoQuote">
+          We didn't build a writer. We built the moment <em>before</em> you write — and made it lighter.
+        </blockquote>
+        <p class="manifesto__sig reveal">— The Nimbus team</p>
+      </div>
+    </section>
+
+    <!-- ============ STATS ============ -->
+    <section class="stats" aria-label="Nimbus by the numbers">
+      <div class="container stats__grid">
+        <div class="stat reveal"><span class="stat__n"><span data-count="38">0</span>M</span><span class="stat__l">replies accepted with Tab</span></div>
+        <div class="stat reveal" style="--delay:.08s"><span class="stat__n"><span data-count="5.6" data-decimals="1">0</span>h</span><span class="stat__l">saved per writer, every week</span></div>
+        <div class="stat reveal" style="--delay:.16s"><span class="stat__n"><span data-count="71">0</span>%</span><span class="stat__l">of suggestions sent unedited</span></div>
+      </div>
+    </section>
+
+    <!-- ============ VOICES ============ -->
+    <section class="section voices" id="voices">
+      <div class="container">
+        <header class="section__head center reveal">
+          <p class="eyebrow">Overheard</p>
+          <h2 class="h2">People stopped <em>overthinking.</em></h2>
+        </header>
+        <div class="quotes">
+          <figure class="quote reveal">
+            <blockquote>“I used to leave LinkedIn messages on read for days because I didn't know how to start. Now I click, Tab, send. Inbox zero, socially.”</blockquote>
+            <figcaption><span class="av" style="--h:280">PR</span><span><strong>Priya R.</strong><small>Founder, Lattice Labs</small></span></figcaption>
+          </figure>
+          <figure class="quote reveal" style="--delay:.08s">
+            <blockquote>“It's the first AI thing that doesn't feel like AI. The replies sound like me — even the dumb jokes.”</blockquote>
+            <figcaption><span class="av" style="--h:300">MJ</span><span><strong>Marcus J.</strong><small>Creator, 240k on X</small></span></figcaption>
+          </figure>
+          <figure class="quote reveal" style="--delay:.16s">
+            <blockquote>“My mum gets proper replies on WhatsApp now. She thinks I've become a better son. I have, technically.”</blockquote>
+            <figcaption><span class="av" style="--h:260">TO</span><span><strong>Tomi O.</strong><small>Product designer</small></span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section class="section pricing" id="pricing">
+      <div class="container">
+        <header class="section__head center reveal">
+          <p class="eyebrow">Pricing</p>
+          <h2 class="h2">Start with a drizzle.<br /><em>Upgrade to a storm.</em></h2>
+          <div class="billing" role="group" aria-label="Billing period">
+            <button class="is-on" data-bill="m">Monthly</button>
+            <button data-bill="y">Yearly <span class="save">−33%</span></button>
+            <span class="billing__thumb"></span>
+          </div>
+        </header>
+
+        <div class="plans">
+          <article class="plan reveal">
+            <h3>Drizzle</h3>
+            <p class="plan__tag">For everyday replies.</p>
+            <p class="plan__price"><span class="cur">$</span>0<small>/forever</small></p>
+            <a href="#cta" class="btn btn--ghost btn--block">Add to Chrome</a>
+            <ul>
+              <li><i class="fa-solid fa-check"></i>40 suggestions a day</li>
+              <li><i class="fa-solid fa-check"></i>X, LinkedIn, WhatsApp, Instagram</li>
+              <li><i class="fa-solid fa-check"></i>3 tones</li>
+              <li><i class="fa-solid fa-check"></i>Tab, word-by-word &amp; Esc</li>
+            </ul>
+          </article>
+          <article class="plan plan--pro reveal" style="--delay:.08s">
+            <span class="plan__badge">Most loved</span>
+            <h3>Storm</h3>
+            <p class="plan__tag">For people who live in their inbox.</p>
+            <p class="plan__price"><span class="cur">$</span><span id="proPrice">6</span><small id="proPer">/month</small></p>
+            <a href="#cta" class="btn btn--light btn--block">Start 14-day free trial</a>
+            <ul>
+              <li><i class="fa-solid fa-check"></i>Unlimited suggestions</li>
+              <li><i class="fa-solid fa-check"></i>Every text box on the web</li>
+              <li><i class="fa-solid fa-check"></i>Personal voice model</li>
+              <li><i class="fa-solid fa-check"></i>All tones + custom tones</li>
+              <li><i class="fa-solid fa-check"></i>40+ languages</li>
+              <li><i class="fa-solid fa-check"></i>Priority, sub-200ms suggestions</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="section faq" id="faq">
+      <div class="container container--narrow">
+        <header class="section__head center reveal">
+          <p class="eyebrow">Questions</p>
+          <h2 class="h2">Asked <em>&amp;</em> answered.</h2>
+        </header>
+        <div class="faq__list">
+          <details class="reveal" open>
+            <summary>Does Nimbus send messages for me?<span class="plus"></span></summary>
+            <p>Never. Nimbus only suggests. Nothing is typed until you press Tab, and nothing is sent until you hit send yourself.</p>
+          </details>
+          <details class="reveal">
+            <summary>Which sites does it work on?<span class="plus"></span></summary>
+            <p>X, LinkedIn, WhatsApp Web, Instagram, Gmail, Slack, Discord, Reddit, Messenger, Telegram Web, YouTube comments and GitHub — plus, on Storm, any text box on the web.</p>
+          </details>
+          <details class="reveal">
+            <summary>What happens to my conversations?<span class="plus"></span></summary>
+            <p>The visible thread is used, in-flight, to write a suggestion — then it's gone. We don't store messages, sell data, or train models on your conversations.</p>
+          </details>
+          <details class="reveal">
+            <summary>Will Tab still work normally?<span class="plus"></span></summary>
+            <p>Yes. Tab only accepts when a ghost suggestion is visible. Otherwise it does exactly what it always did. You can also remap the key in settings.</p>
+          </details>
+          <details class="reveal">
+            <summary>Can I turn it off on certain sites?<span class="plus"></span></summary>
+            <p>One click on the cloud in your toolbar pauses Nimbus for that site, for an hour, or forever.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="final" id="cta">
+      <div class="final__bg" aria-hidden="true"></div>
+      <div class="final__veil" aria-hidden="true"></div>
+      <div class="container final__inner">
+        <h2 class="final__title reveal">Your next reply is<br /><em>already in the air.</em></h2>
+        <button class="final__key reveal" id="finalKey" type="button" aria-label="Press the Tab key">
+          <span class="keycap keycap--giant">Tab <i class="fa-solid fa-arrow-right-long"></i></span>
+          <span class="final__burst" id="finalBurst"></span>
+        </button>
+        <div class="reveal">
+          <a href="https://chromewebstore.google.com/" target="_blank" rel="noopener" class="btn btn--light btn--lg magnetic">
+            <i class="fa-brands fa-chrome"></i><span>Add Nimbus to Chrome</span><span class="btn__meta">free</span>
+          </a>
+          <p class="final__fine">Works with Chrome, Arc, Brave &amp; Edge · 30-second install</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="#top" class="brand"><span class="brand__mark" data-cloud-logo></span><span class="brand__name">Nimbus</span></a>
+        <p>The right words, already in the air.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div><h4>Product</h4><a href="#ritual">How it works</a><a href="#playground">Playground</a><a href="#pricing">Pricing</a></div>
+        <div><h4>Company</h4><a href="#manifesto">Manifesto</a><a href="#voices">Stories</a><a href="#faq">FAQ</a></div>
+        <div><h4>Legal</h4><a href="#faq">Privacy</a><a href="#faq">Terms</a></div>
+      </nav>
+    </div>
+    <div class="container footer__base">
+      <span>© 2026 Nimbus Labs</span>
+      <span class="footer__mono">Made between thoughts.</span>
+    </div>
+  </footer>
+
+  <script src="js/clouds.js"></script>
+  <script src="js/sky.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
