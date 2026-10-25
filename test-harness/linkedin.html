@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinkedIn Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #000000;
+      color: #ffffff;
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 30px 16px;
+      min-height: 100vh;
+    }
+    .feed-card {
+      width: 620px;
+      border: 1px solid #282e33;
+      border-radius: 12px;
+      background: #1b1f23;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .linkedin-post-card {
+      padding: 20px 24px;
+      border-bottom: 1px solid #282e33;
+    }
+    .actor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .actor-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0a66c2, #004182);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      font-size: 16px;
+    }
+    .actor-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .post-author {
+      font-weight: 600;
+      font-size: 15px;
+      color: #ffffff;
+    }
+    .actor-headline {
+      font-size: 12px;
+      color: #9da6af;
+    }
+    .post-text {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #e8eaed;
+      margin-bottom: 16px;
+    }
+    .social-counts {
+      display: flex;
+      justify-content: space-between;
+      color: #9da6af;
+      font-size: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #282e33;
+    }
+    .comment-section {
+      padding: 20px 24px 34px 24px;
+      background: #14171a;
+      position: relative;
+    }
+    .comment-row {
+      display: flex;
+      gap: 12px;
+    }
+    .my-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #3f2063;
+      border: 1px solid #8655b0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #c8aed6;
+    }
+    .editor-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    .comments-comment-box__editor {
+      min-height: 80px;
+      padding: 12px 14px;
+      background: #0b0612;
+      border: 1px solid #3f2063;
+      border-radius: 10px;
+      color: #f4ebef;
+      font-size: 14.5px;
+      line-height: 1.5;
+      outline: none;
+      word-break: break-word;
+      transition: border-color 0.2s ease;
+    }
+    .comments-comment-box__editor:focus {
+      border-color: #8655b0;
+      box-shadow: 0 0 16px rgba(134, 85, 176, 0.35);
+    }
+    .comments-comment-box__editor:empty:before {
+      content: "Add a comment...";
+      color: #9da6af;
+      pointer-events: none;
+    }
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+    .post-btn {
+      background: #70b5f9;
+      color: #000;
+      border: none;
+      border-radius: 999px;
+      padding: 7px 18px;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="feed-card">
+    <div class="linkedin-post-card">
+      <div class="actor-header">
+        <div class="actor-avatar">SJ</div>
+        <div class="actor-info">
+          <span class="post-author update-components-actor__name">Sarah Jenkins</span>
+          <span class="actor-headline">VP of Engineering at CloudScale · 1st</span>
+        </div>
+      </div>
+      <div class="post-text feed-shared-update-v2__description">
+        Our engineering team just open-sourced our entire local AI pipeline! We've reduced our cloud inference costs by 78% while guaranteeing 100% data privacy for our enterprise users. What is your company's strategy for on-premise AI?
+      </div>
+      <div class="social-counts">
+        <span>👏 342 reactions</span>
+        <span>💬 58 comments</span>
+      </div>
+    </div>
+
+    <div class="comment-section">
+      <div class="comment-row">
+        <div class="my-avatar">YOU</div>
+        <div class="editor-wrapper">
+          <div class="comments-comment-box__editor" 
+               id="linkedin-editor"
+               contenteditable="true" 
+               role="textbox" 
+               aria-multiline="true"></div>
+          <div class="action-row">
+            <button class="post-btn">Comment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

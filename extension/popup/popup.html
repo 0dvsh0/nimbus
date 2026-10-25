@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nimbus — Ghost Autocomplete</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="nimbus-popup">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.5 18C4.01472 18 2 15.9853 2 13.5C2 11.1645 3.78453 9.24584 6.09633 9.02341C6.67139 6.17134 9.18342 4 12.2 4C15.6518 4 18.5 6.74543 18.5 10.1538C18.5 10.3734 18.4878 10.5902 18.4638 10.8033C20.4853 11.2339 22 13.0189 22 15.1667C22 17.6519 19.9853 19.6667 17.5 19.6667H6.5" stroke="#c8aed6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8" cy="8" r="0.75" fill="#f4ebef"/>
+            <circle cx="16" cy="7" r="0.75" fill="#f4ebef"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Nimbus</h1>
+          <span class="brand-tag">Open-Source AI · Manifest V3</span>
+        </div>
+      </div>
+      <label class="switch" title="Enable / Disable Nimbus">
+        <input type="checkbox" id="toggle-enable" checked>
+        <span class="slider"></span>
+      </label>
+    </header>
+
+    <!-- Status Bar -->
+    <div class="status-bar" id="status-bar">
+      <div class="status-indicator">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-text" id="status-text">Checking local AI backend...</span>
+      </div>
+      <span class="status-latency" id="status-latency">-- ms</span>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="playground">Playground</button>
+      <button class="tab-btn" data-tab="settings">AI Backend</button>
+      <button class="tab-btn" data-tab="shortcuts">Shortcuts</button>
+    </nav>
+
+    <!-- Tab 1: Playground -->
+    <section class="tab-content active" id="tab-playground">
+      <div class="tone-bar">
+        <span class="tone-label">Tone:</span>
+        <div class="tone-pills" id="tone-pills">
+          <button class="tone-pill active" data-tone="Warm">Warm</button>
+          <button class="tone-pill" data-tone="Witty">Witty</button>
+          <button class="tone-pill" data-tone="Brief">Brief</button>
+          <button class="tone-pill" data-tone="Professional">Professional</button>
+          <button class="tone-pill" data-tone="Counter">Counter</button>
+        </div>
+      </div>
+
+      <div class="playground-card">
+        <div class="playground-scenario-label">Try typing a reply:</div>
+        <div class="input-wrapper">
+          <textarea id="playground-input" placeholder="Type 'Congrats' or leave blank and wait for condensation..." rows="3"></textarea>
+          <div class="playground-ghost" id="playground-ghost"></div>
+        </div>
+        <div class="playground-footer">
+          <span class="hint-text">Press <span class="keycap">Tab</span> to condense and accept</span>
+          <button class="btn-primary" id="btn-demo-trigger">Generate</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Backend Settings -->
+    <section class="tab-content" id="tab-settings">
+      <div class="form-group">
+        <label for="provider-select">Inference Engine</label>
+        <select id="provider-select">
+          <option value="ollama">Ollama (Local Open-Source Daemon)</option>
+          <option value="openai">OpenAI-Compatible (LM Studio / vLLM)</option>
+          <option value="fallback">Instant Smart Heuristics (Offline)</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="group-ollama">
+        <label for="ollama-url">Ollama Host URL</label>
+        <div class="input-row">
+          <input type="text" id="ollama-url" value="http://localhost:11434">
+          <button class="btn-secondary" id="btn-test-ollama">Test</button>
+        </div>
+        <label for="ollama-model" style="margin-top: 8px;">Model Name</label>
+        <input type="text" id="ollama-model" value="llama3.2:latest" placeholder="llama3.2:latest, qwen2.5:latest, etc.">
+      </div>
+
+      <div class="form-group hidden" id="group-custom">
+        <label for="custom-url">Endpoint URL</label>
+        <input type="text" id="custom-url" value="http://localhost:1234/v1">
+        <label for="custom-model" style="margin-top: 8px;">Model ID</label>
+        <input type="text" id="custom-model" value="local-model">
+      </div>
+
+      <button class="btn-primary btn-block" id="btn-save-settings">Save Settings</button>
+      <div class="toast-msg" id="toast-msg">Settings saved!</div>
+    </section>
+
+    <!-- Tab 3: Shortcuts -->
+    <section class="tab-content" id="tab-shortcuts">
+      <div class="shortcut-list">
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Accept suggested ghost text</span>
+          <span class="keycap">Tab</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Cycle tone (Warm, Witty, Brief...)</span>
+          <div><span class="keycap">Alt</span> + <span class="keycap">]</span></div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-desc">Dismiss ghost suggestion</span>
+          <span class="keycap">Esc</span>
+        </div>
+      </div>
+      <div class="privacy-callout">
+        <div class="privacy-title">🔒 100% Private & Open Source</div>
+        <p>Your keystrokes and drafts never touch cloud servers. Inference executes on your local GPU/CPU via Ollama or within your browser.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="../ai/engine.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

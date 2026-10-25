@@ -1,0 +1,16 @@
+{
+  "name": "nimbus",
+  "version": "1.0.0",
+  "description": "Landing page for **Nimbus**, a Chrome extension that suggests replies inside any text box (X, LinkedIn, WhatsApp Web, Instagram, Gmail and more). You accept a suggestion with **Tab**.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "puppeteer-core": "^25.16.0"
+  }
+}

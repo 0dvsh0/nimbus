@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gmail Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #141414;
+      color: #e3e3e3;
+      font-family: 'Google Sans', Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 30px 16px;
+      min-height: 100vh;
+    }
+    .gmail-window {
+      width: 640px;
+      background: #1e1f20;
+      border: 1px solid #444746;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      overflow: hidden;
+    }
+    .gmail-header {
+      background: #282a2c;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #444746;
+    }
+    .window-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #e3e3e3;
+    }
+    .gmail-thread-container {
+      padding: 18px 22px;
+      border-bottom: 1px solid #444746;
+    }
+    .email-subject {
+      font-size: 17px;
+      font-weight: 500;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    .sender-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .sender-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #a8c7fa;
+      color: #040c1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .sender-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #e3e3e3;
+    }
+    .sender-email {
+      color: #8e918f;
+      font-size: 12px;
+    }
+    .email-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #c4c7c5;
+    }
+    .compose-container {
+      padding: 18px 22px 30px 22px;
+      position: relative;
+    }
+    .recipient-bar {
+      font-size: 13px;
+      color: #8e918f;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #444746;
+      margin-bottom: 14px;
+    }
+    .recipient-bar span {
+      color: #e3e3e3;
+      background: #333537;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-left: 6px;
+    }
+    .compose-editor {
+      min-height: 100px;
+      padding: 12px 14px;
+      background: #0b0612;
+      border: 1px solid #3f2063;
+      border-radius: 10px;
+      color: #f4ebef;
+      font-size: 14.5px;
+      line-height: 1.5;
+      outline: none;
+      word-break: break-word;
+      transition: border-color 0.2s ease;
+    }
+    .compose-editor:focus {
+      border-color: #8655b0;
+      box-shadow: 0 0 16px rgba(134, 85, 176, 0.35);
+    }
+    .compose-editor:empty:before {
+      content: "Reply to Marcus Vance...";
+      color: #8e918f;
+      pointer-events: none;
+    }
+    .compose-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .send-btn {
+      background: #a8c7fa;
+      color: #040c1e;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 24px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="gmail-window">
+    <div class="gmail-header">
+      <span class="window-title">Thread: Product Roadmap Review</span>
+      <span style="color: #8e918f; font-size: 13px;">✕</span>
+    </div>
+
+    <div class="gmail-thread-container">
+      <h2 class="email-subject hP">Product Roadmap Review & Deliverables</h2>
+      <div class="sender-row">
+        <div class="sender-avatar">MV</div>
+        <div>
+          <span class="sender-name">Marcus Vance</span>
+          <span class="sender-email">&lt;marcus@acme.ai&gt;</span>
+        </div>
+      </div>
+      <div class="email-body a3s aiL">
+        Hi team, I've consolidated the user feedback from beta testing. The response times and privacy guarantees are testing exceptionally well. Are we ready to sign off on the Q3 milestones?
+      </div>
+    </div>
+
+    <div class="compose-container">
+      <div class="recipient-bar">
+        To: <span>Marcus Vance &lt;marcus@acme.ai&gt;</span>
+      </div>
+      <div class="compose-editor" 
+           id="gmail-editor"
+           role="textbox" 
+           aria-label="Message Body" 
+           contenteditable="true"></div>
+      <div class="compose-actions">
+        <button class="send-btn">Send</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
